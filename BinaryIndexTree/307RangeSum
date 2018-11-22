@@ -1,0 +1,44 @@
+// reference: https://www.geeksforgeeks.org/binary-indexed-tree-or-fenwick-tree-2/
+class NumArray {
+    int [] nums;
+    int [] BIT;
+    
+    public NumArray(int[] nums) {
+        BIT = new int[nums.length+1];
+        this.nums = nums;
+        for(int i=0; i<nums.length; i++)
+            SelfUpdate(i, BIT.length, nums[i]);
+    }
+    
+    public void update(int i, int val){
+        SelfUpdate(i, BIT.length, val - nums[i]);
+        nums[i] = val;
+    }
+    
+    public void SelfUpdate(int i, int n, int val) {
+        // parent index is (last bit add bit set(i)) = i &(-i) 
+        // Ex: 6: 0110 => parents: 1000 = 8
+        // how to get last bit? use 2's complement
+        // Ex: -6: 1010 
+        i ++;
+        while(i<n){
+            BIT[i] += val;
+            i += i & (-i);
+        }
+    }
+    
+    public int sumRange(int i, int j) {
+        return countSum(j) - countSum(i-1); 
+    }
+    
+    public int countSum(int i){
+        int sum = 0;
+        i++;
+        while( i>0 ){
+            sum+=BIT[i]; 
+            i -= i &(-i);
+        }
+        
+        return sum;
+    }
+}
