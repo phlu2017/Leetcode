@@ -1,0 +1,35 @@
+class Solution {
+//classical union find but using map instead of array
+    int group = 0;
+    public int removeStones(int[][] stones) {
+        Map<String, String> component = new HashMap<>();
+        for(int i=0; i<stones.length; i++){
+            String pos = stones[i][0]+"-"+stones[i][1];
+            component.put(pos, pos);
+        }
+        for(int[] stone1: stones){
+            String pos = stone1[0]+"-"+stone1[1];
+            for(int[] stone2: stones){
+                if(stone1[0]==stone2[0] || stone1[1]==stone2[1]){
+                    union(pos, stone2[0]+"-"+stone2[1], component);
+                }
+            }
+        }
+        return group;
+    }
+    public void union(String stone1, String stone2, Map<String, String> component){
+        String p1 = find(stone1, component), p2 = find(stone2, component);
+        if(!p1.equals(p2)){
+            component.put(p1, p2);
+            group++;
+        }
+    }
+    public String find(String stone, Map<String, String> component){
+        String p = component.get(stone);
+        while(!p.equals(stone)){
+            stone = p;
+            p = component.get(stone);
+        }
+        return p;
+    }
+}
