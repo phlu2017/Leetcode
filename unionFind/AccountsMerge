@@ -1,0 +1,48 @@
+class Solution {
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        Map<String, String> emailMap = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
+        for( List<String> account: accounts){
+            String name = account.get(0);
+            for(int i=1; i<account.size(); i++){
+                String email = account.get(i);
+                emailMap.put(email, email);
+                map.put(email, name);
+            }
+            //System.out.print(emailMap+"\n");
+        }
+        for( List<String> account: accounts)
+            union(account, emailMap);
+  
+        Map<String, List<String>> group = new HashMap<>();
+        for(Map.Entry<String, String> pair: emailMap.entrySet()){
+            String p = find(pair.getValue(), emailMap);
+            if(!group.containsKey(p)) group.put(p, new LinkedList<>());
+            group.get(p).add(pair.getKey());
+        }
+        
+        List<List<String>> ans = new LinkedList<>();
+        for(Map.Entry<String, List<String>> groupPair : group.entrySet()){
+            Collections.sort(groupPair.getValue());
+            List<String> cur = new LinkedList<>(groupPair.getValue());
+            cur.add(0, map.get(groupPair.getKey()));
+            ans.add(cur);
+        }
+        return ans;
+    }
+    public String find(String email, Map<String, String> emailMap){
+        while(!emailMap.get(email).equals(email)){
+            email = emailMap.get(email);
+        }
+        return email;
+    }
+    public void union(List<String> account, Map<String, String> emailMap){
+        String head = account.get(1);
+        String p1 = find(head, emailMap);
+        for(int i=2; i<account.size(); i++){
+            String p2 = find(account.get(i), emailMap);
+            emailMap.put(p2,p1);
+            emailMap.put(account.get(i), p1);    
+        }
+    }
+}
