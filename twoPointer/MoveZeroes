@@ -1,0 +1,20 @@
+class Solution {
+//keep relative order
+    public void moveZeroes(int[] nums) {
+        int end = 0;
+        int start = 0;
+        while(end<nums.length){
+            if(nums[end]!=0){
+                while(start<end && nums[start]!=0)
+                    start++;
+                swap(start, end, nums);
+            }
+            end++;
+        }
+    }
+    public void swap(int i, int j, int[] nums){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
